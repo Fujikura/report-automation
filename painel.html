@@ -1,0 +1,1072 @@
+<!doctype html>
+<html lang="pt-BR">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Automação de Relatório WhatsApp</title>
+        <script
+            crossorigin
+            src="https://unpkg.com/react@18/umd/react.production.min.js"
+        ></script>
+        <script
+            crossorigin
+            src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"
+        ></script>
+        <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+        <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/@tabler/icons@latest/tabler-icons.css"
+        />
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            body {
+                font-family:
+                    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+                    "Helvetica Neue", Arial, sans-serif;
+                background: #f5f5f5;
+                color: #333;
+                padding: 20px;
+            }
+
+            .container {
+                max-width: 1000px;
+                margin: 0 auto;
+                background: white;
+                border-radius: 12px;
+                padding: 2rem;
+                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            }
+
+            .header {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                margin-bottom: 2rem;
+                padding-bottom: 1rem;
+                border-bottom: 1px solid #e0e0e0;
+            }
+
+            .header h1 {
+                font-size: 24px;
+                font-weight: 600;
+                color: #333;
+            }
+
+            .config-section {
+                margin-bottom: 2rem;
+                padding: 1rem;
+                background: #f9f9f9;
+                border: 1px solid #e0e0e0;
+                border-radius: 8px;
+            }
+
+            .config-title {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 1rem;
+                cursor: pointer;
+            }
+
+            .config-title h3 {
+                font-size: 15px;
+                font-weight: 500;
+                color: #333;
+            }
+
+            .toggle-btn {
+                background: transparent;
+                border: 1px solid #ddd;
+                padding: 6px 12px;
+                border-radius: 6px;
+                font-size: 12px;
+                cursor: pointer;
+                color: #666;
+                transition: all 0.2s;
+            }
+
+            .toggle-btn:hover {
+                border-color: #999;
+                background: #f0f0f0;
+            }
+
+            .config-inputs {
+                display: grid;
+                grid-template-columns: 1fr 1fr 1fr;
+                gap: 12px;
+            }
+
+            .input-group {
+                display: flex;
+                flex-direction: column;
+            }
+
+            .input-group label {
+                font-size: 12px;
+                color: #666;
+                margin-bottom: 4px;
+                font-weight: 500;
+            }
+
+            .input-group input {
+                padding: 8px;
+                border: 1px solid #ddd;
+                border-radius: 6px;
+                font-size: 13px;
+                transition: border 0.2s;
+            }
+
+            .input-group input:focus {
+                outline: none;
+                border-color: #2a78d6;
+                box-shadow: 0 0 0 2px rgba(42, 120, 214, 0.1);
+            }
+
+            .input-group .hint {
+                font-size: 11px;
+                color: #999;
+                margin-top: 4px;
+            }
+
+            .upload-section {
+                margin-bottom: 2rem;
+            }
+
+            .upload-section h2 {
+                font-size: 18px;
+                font-weight: 500;
+                margin-bottom: 1rem;
+                color: #333;
+            }
+
+            .upload-box {
+                border: 2px dashed #ccc;
+                border-radius: 8px;
+                padding: 2rem;
+                text-align: center;
+                cursor: pointer;
+                transition: all 0.2s;
+                background: #fafafa;
+            }
+
+            .upload-box:hover {
+                border-color: #999;
+                background: #f5f5f5;
+            }
+
+            .upload-icon {
+                font-size: 32px;
+                color: #999;
+                margin-bottom: 8px;
+                display: block;
+            }
+
+            .upload-text {
+                font-size: 15px;
+                color: #333;
+                margin-bottom: 4px;
+            }
+
+            .upload-hint {
+                font-size: 13px;
+                color: #999;
+            }
+
+            .upload-input {
+                display: none;
+            }
+
+            .error-box {
+                margin-top: 12px;
+                padding: 12px;
+                background: #fce4e4;
+                color: #c41e3a;
+                border-radius: 6px;
+                font-size: 13px;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+            .month-section {
+                margin-bottom: 2rem;
+                padding: 1rem;
+                background: #e3f2fd;
+                border: 1px solid #90caf9;
+                border-radius: 8px;
+            }
+
+            .month-selector {
+                display: flex;
+                gap: 12px;
+                align-items: flex-end;
+                margin-bottom: 1rem;
+            }
+
+            .month-selector label {
+                font-weight: 500;
+                color: #333;
+                font-size: 14px;
+            }
+
+            .month-selector select {
+                padding: 8px;
+                border: 1px solid #90caf9;
+                border-radius: 6px;
+                font-size: 14px;
+                cursor: pointer;
+            }
+
+            .month-info {
+                padding: 12px;
+                background: #e8f5e9;
+                border: 1px solid #4caf50;
+                border-radius: 6px;
+                font-size: 13px;
+                color: #2e7d32;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+            .table-section {
+                margin-bottom: 2rem;
+            }
+
+            .table-title {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 1rem;
+            }
+
+            .table-title h2 {
+                font-size: 18px;
+                font-weight: 500;
+                color: #333;
+                margin: 0;
+            }
+
+            .select-all-btn {
+                background: transparent;
+                border: 1px solid #ddd;
+                padding: 6px 12px;
+                border-radius: 6px;
+                font-size: 12px;
+                cursor: pointer;
+                color: #666;
+            }
+
+            .select-all-btn:hover {
+                border-color: #999;
+                background: #f0f0f0;
+            }
+
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                font-size: 13px;
+            }
+
+            thead tr {
+                border-bottom: 1px solid #ddd;
+            }
+
+            thead th {
+                padding: 8px;
+                text-align: left;
+                font-weight: 500;
+                color: #666;
+                background: #f9f9f9;
+            }
+
+            tbody td {
+                padding: 8px;
+                border-bottom: 1px solid #f0f0f0;
+                color: #333;
+            }
+
+            tbody tr:hover {
+                background: #f9f9f9;
+            }
+
+            tbody tr.selected {
+                background: #f0f7ff;
+            }
+
+            .actions {
+                display: flex;
+                gap: 8px;
+                justify-content: flex-end;
+                margin-bottom: 1rem;
+            }
+
+            .btn {
+                padding: 8px 16px;
+                border-radius: 6px;
+                font-size: 14px;
+                cursor: pointer;
+                transition: all 0.2s;
+                font-weight: 500;
+                border: none;
+                display: flex;
+                align-items: center;
+                gap: 6px;
+            }
+
+            .btn-secondary {
+                background: transparent;
+                border: 1px solid #ddd;
+                color: #333;
+            }
+
+            .btn-secondary:hover {
+                border-color: #999;
+                background: #f0f0f0;
+            }
+
+            .btn-primary {
+                background: #2a78d6;
+                color: white;
+            }
+
+            .btn-primary:hover:not(:disabled) {
+                background: #1f5fa5;
+            }
+
+            .btn-primary:disabled {
+                background: #ccc;
+                cursor: not-allowed;
+                color: #999;
+            }
+
+            .success-box {
+                margin-top: 1rem;
+                padding: 12px;
+                background: #e8f5e9;
+                color: #2e7d32;
+                border-radius: 6px;
+                font-size: 13px;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+            .loading {
+                text-align: center;
+                padding: 2rem;
+                color: #666;
+            }
+
+            .spinner {
+                display: inline-block;
+                animation: spin 1s linear infinite;
+                margin-right: 8px;
+            }
+
+            @keyframes spin {
+                to {
+                    transform: rotate(360deg);
+                }
+            }
+
+            @media (max-width: 768px) {
+                .config-inputs {
+                    grid-template-columns: 1fr;
+                }
+
+                .month-selector {
+                    flex-direction: column;
+                    align-items: flex-start;
+                }
+
+                .actions {
+                    flex-direction: column;
+                }
+
+                .btn {
+                    width: 100%;
+                    justify-content: center;
+                }
+
+                table {
+                    font-size: 12px;
+                }
+
+                thead th,
+                tbody td {
+                    padding: 6px;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div id="root"></div>
+
+        <script type="text/babel">
+            const { useState, useEffect } = React;
+
+            function WhatsAppReportAutomation() {
+                const [file, setFile] = useState(null);
+                const [records, setRecords] = useState([]);
+                const [filteredRecords, setFilteredRecords] = useState([]);
+                const [loading, setLoading] = useState(false);
+                const [submitting, setSubmitting] = useState(false);
+                const [submitted, setSubmitted] = useState(false);
+                const [error, setError] = useState("");
+                const [selectedRecords, setSelectedRecords] = useState(
+                    new Set(),
+                );
+                const [serverUrl, setServerUrl] = useState(
+                    "http://localhost:3001",
+                );
+                const [username, setUsername] = useState("");
+                const [password, setPassword] = useState("");
+                const [showCredentials, setShowCredentials] = useState(false);
+                const [submitStatus, setSubmitStatus] = useState({
+                    success: 0,
+                    total: 0,
+                });
+                const [selectedMonth, setSelectedMonth] = useState("");
+                const [availableMonths, setAvailableMonths] = useState([]);
+
+                // Extrair horários da MENSAGEM, não da hora de envio
+                const parseWhatsAppFile = (text) => {
+                    const lines = text.split("\n");
+                    const marcioMessages = {};
+                    const timeRegex = /(\d{1,2}):(\d{2})/;
+
+                    lines.forEach((line) => {
+                        if (!line.includes("Márcio Fujikura")) return;
+
+                        const match = line.match(
+                            /\[(\d{2})\/(\d{2})\/(\d{4}),\s(\d{2}):(\d{2}):(\d{2})\]\s[^:]+:\s(.+)/,
+                        );
+                        if (!match) return;
+
+                        const [, day, month, year, hour, min, sec, message] =
+                            match;
+                        const date = `${day}/${month}/${year}`;
+                        const msgTime = `${hour}:${min}`;
+
+                        if (!marcioMessages[date]) {
+                            marcioMessages[date] = {
+                                entrada: null,
+                                almoco: null,
+                                retorno: null,
+                                saida: null,
+                                firstMessageTime: msgTime,
+                                lastMessageTime: msgTime,
+                            };
+                        }
+
+                        const msg = message.toLowerCase().trim();
+
+                        // Extrair horários da MENSAGEM
+                        if (msg.includes("entrada")) {
+                            const timeMatch = msg.match(timeRegex);
+                            if (timeMatch) {
+                                const hora = timeMatch[1].padStart(2, "0");
+                                marcioMessages[date].entrada =
+                                    `${hora}:${timeMatch[2]}`;
+                            }
+                        }
+
+                        if (msg.includes("almoço") || msg.includes("almoco")) {
+                            const timeMatch = msg.match(timeRegex);
+                            if (timeMatch) {
+                                const hora = timeMatch[1].padStart(2, "0");
+                                marcioMessages[date].almoco =
+                                    `${hora}:${timeMatch[2]}`;
+                            }
+                        }
+
+                        if (msg.includes("retorno")) {
+                            const timeMatch = msg.match(timeRegex);
+                            if (timeMatch) {
+                                const hora = timeMatch[1].padStart(2, "0");
+                                marcioMessages[date].retorno =
+                                    `${hora}:${timeMatch[2]}`;
+                            }
+                        }
+
+                        if (msg.includes("saída") || msg.includes("saida")) {
+                            const timeMatch = msg.match(timeRegex);
+                            if (timeMatch) {
+                                const hora = timeMatch[1].padStart(2, "0");
+                                marcioMessages[date].saida =
+                                    `${hora}:${timeMatch[2]}`;
+                            }
+                        }
+
+                        // Rastrear primeira e última mensagem
+                        if (msgTime < marcioMessages[date].firstMessageTime) {
+                            marcioMessages[date].firstMessageTime = msgTime;
+                        }
+                        if (msgTime > marcioMessages[date].lastMessageTime) {
+                            marcioMessages[date].lastMessageTime = msgTime;
+                        }
+                    });
+
+                    const processedRecords = Object.entries(marcioMessages).map(
+                        ([date, data]) => ({
+                            date,
+                            entrada: data.entrada || data.firstMessageTime,
+                            almoco: data.almoco || "12:30",
+                            retorno: data.retorno || "14:00",
+                            saida: data.saida || data.lastMessageTime,
+                            descricao: "HOME OFFICE",
+                        }),
+                    );
+
+                    return processedRecords.sort((a, b) => {
+                        const [dA, mA, yA] = a.date.split("/").map(Number);
+                        const [dB, mB, yB] = b.date.split("/").map(Number);
+                        return (
+                            new Date(yA, mA - 1, dA) - new Date(yB, mB - 1, dB)
+                        );
+                    });
+                };
+
+                // Verificar se credenciais estão no .env do servidor
+                useEffect(() => {
+                    const checkServerConfig = async () => {
+                        try {
+                            const response = await fetch(
+                                `${serverUrl}/api/health`,
+                            );
+                            const data = await response.json();
+                            if (data.configured) {
+                                setUsername("[Configurado no .env]");
+                                setPassword("[Configurado no .env]");
+                                console.log(
+                                    "✓ Credenciais detectadas no servidor",
+                                );
+                            }
+                        } catch (e) {
+                            // Servidor não respondendo ou sem credenciais
+                        }
+                    };
+                    checkServerConfig();
+                }, [serverUrl]);
+
+                // Extrair meses disponíveis
+                useEffect(() => {
+                    if (records.length > 0) {
+                        const months = new Set();
+                        records.forEach((record) => {
+                            const [day, month, year] = record.date.split("/");
+                            const monthKey = `${year}-${month}`;
+                            months.add(monthKey);
+                        });
+                        const sortedMonths = Array.from(months)
+                            .sort()
+                            .reverse();
+                        setAvailableMonths(sortedMonths);
+
+                        if (sortedMonths.length > 0) {
+                            setSelectedMonth(sortedMonths[0]);
+                        }
+                    }
+                }, [records]);
+
+                // Filtrar registros por mês
+                useEffect(() => {
+                    if (selectedMonth && records.length > 0) {
+                        const [selectedYear, selectedMonthNum] =
+                            selectedMonth.split("-");
+                        const filtered = records.filter((record) => {
+                            const [, month, year] = record.date.split("/");
+                            return (
+                                year === selectedYear &&
+                                month === selectedMonthNum
+                            );
+                        });
+                        setFilteredRecords(filtered);
+                        setSelectedRecords(new Set(filtered.map((_, i) => i)));
+                    } else {
+                        setFilteredRecords([]);
+                        setSelectedRecords(new Set());
+                    }
+                }, [selectedMonth, records]);
+
+                const handleFileSelect = (e) => {
+                    const selectedFile = e.target.files?.[0];
+                    if (selectedFile) {
+                        setFile(selectedFile);
+                        setLoading(true);
+                        setError("");
+                        const reader = new FileReader();
+                        reader.onload = (event) => {
+                            try {
+                                const text = event.target?.result;
+                                const parsed = parseWhatsAppFile(text);
+                                setRecords(parsed);
+                                setLoading(false);
+                            } catch (err) {
+                                setError(
+                                    "Erro ao processar arquivo. Verifique o formato.",
+                                );
+                                setLoading(false);
+                            }
+                        };
+                        reader.readAsText(selectedFile);
+                    }
+                };
+
+                const toggleRecord = (index) => {
+                    const newSelected = new Set(selectedRecords);
+                    if (newSelected.has(index)) {
+                        newSelected.delete(index);
+                    } else {
+                        newSelected.add(index);
+                    }
+                    setSelectedRecords(newSelected);
+                };
+
+                const getMonthName = (monthKey) => {
+                    const [year, month] = monthKey.split("-");
+                    const months = [
+                        "Janeiro",
+                        "Fevereiro",
+                        "Março",
+                        "Abril",
+                        "Maio",
+                        "Junho",
+                        "Julho",
+                        "Agosto",
+                        "Setembro",
+                        "Outubro",
+                        "Novembro",
+                        "Dezembro",
+                    ];
+                    return `${months[parseInt(month) - 1]} de ${year}`;
+                };
+
+                const handleSubmit = async () => {
+                    if (!username || !password) {
+                        setError("Por favor, preencha usuário e senha");
+                        setShowCredentials(true);
+                        return;
+                    }
+
+                    if (selectedRecords.size === 0) {
+                        setError(
+                            "Selecione pelo menos um registro para preencher",
+                        );
+                        return;
+                    }
+
+                    setSubmitting(true);
+                    setError("");
+                    setSubmitStatus({
+                        success: 0,
+                        total: selectedRecords.size,
+                    });
+
+                    try {
+                        const selectedData = filteredRecords.filter((_, i) =>
+                            selectedRecords.has(i),
+                        );
+
+                        const response = await fetch(
+                            `${serverUrl}/api/submit-report`,
+                            {
+                                method: "POST",
+                                headers: { "Content-Type": "application/json" },
+                                body: JSON.stringify({
+                                    records: selectedData,
+                                    username,
+                                    password,
+                                    month: selectedMonth,
+                                }),
+                            },
+                        );
+
+                        if (!response.ok) {
+                            const errorData = await response.json();
+                            throw new Error(
+                                errorData.error || `Erro ${response.status}`,
+                            );
+                        }
+
+                        const result = await response.json();
+
+                        if (result.success) {
+                            setSubmitStatus({
+                                success:
+                                    result.successCount || selectedData.length,
+                                total:
+                                    result.totalRecords || selectedData.length,
+                            });
+                            setSubmitted(true);
+                            setSubmitting(false);
+                            setTimeout(() => setSubmitted(false), 5000);
+                        } else {
+                            throw new Error(
+                                result.error || "Erro ao preencher registros",
+                            );
+                        }
+                    } catch (err) {
+                        setError(
+                            `Erro: ${err.message}. Verifique se o servidor está rodando em ${serverUrl}`,
+                        );
+                        setSubmitting(false);
+                    }
+                };
+
+                return (
+                    <div className="container">
+                        <div className="header">
+                            <i
+                                className="ti ti-report-2"
+                                style={{ fontSize: "28px", color: "#2a78d6" }}
+                            ></i>
+                            <h1>Automação de Relatório WhatsApp</h1>
+                        </div>
+
+                        <div className="config-section">
+                            <div
+                                className="config-title"
+                                onClick={() =>
+                                    setShowCredentials(!showCredentials)
+                                }
+                            >
+                                <h3>⚙️ Configuração do Servidor</h3>
+                                <button className="toggle-btn">
+                                    {showCredentials
+                                        ? "▼ Ocultar"
+                                        : "▶ Mostrar"}
+                                </button>
+                            </div>
+
+                            {showCredentials && (
+                                <div className="config-inputs">
+                                    <div className="input-group">
+                                        <label>URL do Servidor</label>
+                                        <input
+                                            type="text"
+                                            value={serverUrl}
+                                            onChange={(e) =>
+                                                setServerUrl(e.target.value)
+                                            }
+                                            placeholder="http://localhost:3001"
+                                        />
+                                        <div className="hint">
+                                            Default: http://localhost:3001
+                                        </div>
+                                    </div>
+                                    <div className="input-group">
+                                        <label>Usuário</label>
+                                        <input
+                                            type="text"
+                                            value={username}
+                                            onChange={(e) =>
+                                                setUsername(e.target.value)
+                                            }
+                                            placeholder="seu_usuario"
+                                        />
+                                    </div>
+                                    <div className="input-group">
+                                        <label>Senha</label>
+                                        <input
+                                            type="password"
+                                            value={password}
+                                            onChange={(e) =>
+                                                setPassword(e.target.value)
+                                            }
+                                            placeholder="sua_senha"
+                                        />
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+
+                        <div className="upload-section">
+                            <h2>Upload do Arquivo WhatsApp</h2>
+                            <label htmlFor="file-input">
+                                <div
+                                    className="upload-box"
+                                    onDragOver={(e) => e.preventDefault()}
+                                    onDrop={(e) => {
+                                        e.preventDefault();
+                                        const droppedFile =
+                                            e.dataTransfer.files?.[0];
+                                        if (droppedFile) {
+                                            const input =
+                                                document.getElementById(
+                                                    "file-input",
+                                                );
+                                            const dt = new DataTransfer();
+                                            dt.items.add(droppedFile);
+                                            input.files = dt.files;
+                                            handleFileSelect({ target: input });
+                                        }
+                                    }}
+                                >
+                                    <i className="ti ti-upload upload-icon"></i>
+                                    <div className="upload-text">
+                                        Arraste o arquivo .txt aqui ou clique
+                                        para selecionar
+                                    </div>
+                                    <div className="upload-hint">
+                                        {file
+                                            ? file.name
+                                            : "Arquivo WhatsApp exportado"}
+                                    </div>
+                                </div>
+                            </label>
+                            <input
+                                id="file-input"
+                                type="file"
+                                accept=".txt"
+                                onChange={handleFileSelect}
+                                className="upload-input"
+                            />
+                            {error && (
+                                <div className="error-box">
+                                    <i className="ti ti-alert-circle"></i>
+                                    {error}
+                                </div>
+                            )}
+                        </div>
+
+                        {loading && (
+                            <div className="loading">
+                                <i className="ti ti-loader-2 spinner"></i>
+                                Processando arquivo...
+                            </div>
+                        )}
+
+                        {records.length > 0 && !loading && (
+                            <>
+                                <div className="month-section">
+                                    <div className="month-selector">
+                                        <label htmlFor="month-select">
+                                            📅 Selecione um mês:
+                                        </label>
+                                        <select
+                                            id="month-select"
+                                            value={selectedMonth}
+                                            onChange={(e) =>
+                                                setSelectedMonth(e.target.value)
+                                            }
+                                        >
+                                            {availableMonths.map((month) => (
+                                                <option
+                                                    key={month}
+                                                    value={month}
+                                                >
+                                                    {getMonthName(month)}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                    {selectedMonth && (
+                                        <div className="month-info">
+                                            <i className="ti ti-info-circle"></i>
+                                            {filteredRecords.length} registros
+                                            em {getMonthName(selectedMonth)}
+                                        </div>
+                                    )}
+                                </div>
+
+                                <div className="table-section">
+                                    <div className="table-title">
+                                        <h2>
+                                            Registros do Mês (
+                                            {selectedRecords.size}/
+                                            {filteredRecords.length})
+                                        </h2>
+                                        <button
+                                            className="select-all-btn"
+                                            onClick={() =>
+                                                setSelectedRecords(
+                                                    new Set(
+                                                        selectedRecords.size ===
+                                                            filteredRecords.length
+                                                            ? []
+                                                            : filteredRecords.map(
+                                                                  (_, i) => i,
+                                                              ),
+                                                    ),
+                                                )
+                                            }
+                                        >
+                                            {selectedRecords.size ===
+                                            filteredRecords.length
+                                                ? "Desselecionar tudo"
+                                                : "Selecionar tudo"}
+                                        </button>
+                                    </div>
+
+                                    <div style={{ overflowX: "auto" }}>
+                                        <table>
+                                            <thead>
+                                                <tr>
+                                                    <th
+                                                        style={{
+                                                            width: "30px",
+                                                        }}
+                                                    >
+                                                        <input
+                                                            type="checkbox"
+                                                            checked={
+                                                                selectedRecords.size ===
+                                                                    filteredRecords.length &&
+                                                                filteredRecords.length >
+                                                                    0
+                                                            }
+                                                            onChange={() =>
+                                                                setSelectedRecords(
+                                                                    new Set(
+                                                                        selectedRecords.size ===
+                                                                            filteredRecords.length
+                                                                            ? []
+                                                                            : filteredRecords.map(
+                                                                                  (
+                                                                                      _,
+                                                                                      i,
+                                                                                  ) =>
+                                                                                      i,
+                                                                              ),
+                                                                    ),
+                                                                )
+                                                            }
+                                                        />
+                                                    </th>
+                                                    <th>Data</th>
+                                                    <th>Entrada</th>
+                                                    <th>Almoço</th>
+                                                    <th>Retorno</th>
+                                                    <th>Saída</th>
+                                                    <th>Descrição</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {filteredRecords.map(
+                                                    (record, idx) => (
+                                                        <tr
+                                                            key={idx}
+                                                            className={
+                                                                selectedRecords.has(
+                                                                    idx,
+                                                                )
+                                                                    ? "selected"
+                                                                    : ""
+                                                            }
+                                                        >
+                                                            <td>
+                                                                <input
+                                                                    type="checkbox"
+                                                                    checked={selectedRecords.has(
+                                                                        idx,
+                                                                    )}
+                                                                    onChange={() =>
+                                                                        toggleRecord(
+                                                                            idx,
+                                                                        )
+                                                                    }
+                                                                />
+                                                            </td>
+                                                            <td>
+                                                                <strong>
+                                                                    {
+                                                                        record.date
+                                                                    }
+                                                                </strong>
+                                                            </td>
+                                                            <td>
+                                                                {record.entrada}
+                                                            </td>
+                                                            <td>
+                                                                {record.almoco}
+                                                            </td>
+                                                            <td>
+                                                                {record.retorno}
+                                                            </td>
+                                                            <td>
+                                                                {record.saida}
+                                                            </td>
+                                                            <td>
+                                                                {
+                                                                    record.descricao
+                                                                }
+                                                            </td>
+                                                        </tr>
+                                                    ),
+                                                )}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <div className="actions">
+                                    <button
+                                        className="btn btn-secondary"
+                                        onClick={() => {
+                                            setRecords([]);
+                                            setFile(null);
+                                            setSelectedRecords(new Set());
+                                            setSelectedMonth("");
+                                        }}
+                                    >
+                                        <i className="ti ti-trash"></i>
+                                        Limpar
+                                    </button>
+                                    <button
+                                        className="btn btn-primary"
+                                        onClick={handleSubmit}
+                                        disabled={
+                                            submitting ||
+                                            selectedRecords.size === 0
+                                        }
+                                    >
+                                        {submitting ? (
+                                            <>
+                                                <i
+                                                    className="ti ti-loader-2"
+                                                    style={{
+                                                        animation:
+                                                            "spin 1s linear infinite",
+                                                    }}
+                                                ></i>
+                                                Preenchendo... (
+                                                {submitStatus.success}/
+                                                {submitStatus.total})
+                                            </>
+                                        ) : (
+                                            <>
+                                                <i className="ti ti-send"></i>
+                                                Preencher Site (
+                                                {selectedRecords.size})
+                                            </>
+                                        )}
+                                    </button>
+                                </div>
+
+                                {submitted && (
+                                    <div className="success-box">
+                                        <i className="ti ti-check"></i>✅{" "}
+                                        {submitStatus.success}/
+                                        {submitStatus.total} registros
+                                        preenchidos com sucesso! (
+                                        {getMonthName(selectedMonth)})
+                                    </div>
+                                )}
+                            </>
+                        )}
+                    </div>
+                );
+            }
+
+            const root = ReactDOM.createRoot(document.getElementById("root"));
+            root.render(<WhatsAppReportAutomation />);
+        </script>
+    </body>
+</html>
