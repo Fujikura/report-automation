@@ -4,7 +4,7 @@
 
 - Node.js 16+ instalado
 - npm ou yarn
-- Credenciais de acesso ao site https://rctretail.net/ts/index.php
+- Credenciais de acesso ao site
 
 ## 📋 Instalação
 
@@ -39,7 +39,7 @@ Isso vai instalar:
    ```
    REPORT_USERNAME=seu_usuario
    REPORT_PASSWORD=sua_senha
-   REPORT_URL=https://rctretail.net/ts/index.php
+   REPORT_URL=url_site
    PORT=3001
    ```
 
